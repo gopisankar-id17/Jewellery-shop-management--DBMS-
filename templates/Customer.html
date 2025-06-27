@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookHaven - Customer Dashboard</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #1a4d2e;
+            --secondary-color: #ff9f29;
+            --background-color: #f5f5f5;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --light-accent: #eaeaea;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 2rem;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: none;
+            font-size: 1rem;
+            padding-left: 40px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        /* Category Navigation */
+        .category-nav {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-tabs {
+            display: flex;
+            list-style: none;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            gap: 10px;
+        }
+        
+        .category-tab {
+            padding: 8px 16px;
+            background-color: var(--light-accent);
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+        
+        .category-tab.active {
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .category-tab:hover:not(.active) {
+            background-color: #ddd;
+        }
+        
+        /* Featured Section */
+        .featured-section {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 3px;
+            background-color: var(--secondary-color);
+            left: 0;
+            bottom: -5px;
+        }
+        
+        .featured-books {
+            display: flex;
+            overflow-x: auto;
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+        
+        /* Book Cards */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .book-card {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        
+        .featured-card {
+            min-width: 220px;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .book-cover {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            background-color: #f0f0f0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .book-details {
+            padding: 1rem;
+        }
+        
+        .book-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+        
+        .book-author {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .book-price {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .book-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: #ffa41c;
+        }
+        
+        .rating-stars {
+            margin-right: 5px;
+        }
+        
+        .book-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-accent);
+            color: var(--text-color);
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+        
+        /* Category Sections */
+        .category-section {
+            margin-bottom: 3rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 2px;
+            background-color: var(--secondary-color);
+            left: 0;
+            bottom: -5px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-column a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-column a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .footer-bottom {
+            margin-top: 2rem;
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Badge for new books */
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        /* Shopping Cart */
+        .cart-icon {
+            position: relative;
+            font-size: 1.5rem;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--secondary-color);
+            color: white;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .search-bar {
+                margin: 0 1rem;
+            }
+            
+            .book-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 1rem;
+            }
+            
+            .featured-books {
+                gap: 1rem;
+            }
+            
+            .featured-card {
+                min-width: 180px;
+            }
+            
+            .book-cover {
+                height: 200px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .logo {
+                margin-bottom: 0.5rem;
+            }
+            
+            .search-bar {
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: space-around;
+                margin-top: 0.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get cart from localStorage
+            let cart = JSON.parse(localStorage.getItem('bookCart')) || [];
+            
+            // Update cart count display
+            const cartCountElement = document.querySelector('.cart-count');
+            cartCountElement.textContent = cart.length;
+            
+            // Get wishlist from localStorage
+            let wishlist = JSON.parse(localStorage.getItem('bookWishlist')) || [];
+            
+            // Update wishlist icons
+            function updateWishlistIcons() {
+                const wishlistButtons = document.querySelectorAll('.btn-secondary');
+                wishlistButtons.forEach(button => {
+                    const bookCard = button.closest('.book-card');
+                    const bookTitle = bookCard.querySelector('.book-title').textContent;
+                    
+                    // Check if book is in wishlist
+                    const isInWishlist = wishlist.some(item => item.title === bookTitle);
+                    
+                    // Update button text/icon
+                    if (isInWishlist) {
+                        button.innerHTML = '❤️ Wishlisted';
+                    } else {
+                        button.innerHTML = '🤍 Wishlist';
+                    }
+                });
+            }
+            
+            // Call the function when page loads
+            updateWishlistIcons();
+            
+            // Add event listeners to all "Add to Cart" buttons
+            const addToCartButtons = document.querySelectorAll('.btn-primary');
+            
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Get book details from the parent elements
+                    const bookCard = this.closest('.book-card');
+                    const title = bookCard.querySelector('.book-title').textContent;
+                    const author = bookCard.querySelector('.book-author').textContent;
+                    const priceText = bookCard.querySelector('.book-price').textContent;
+                    
+                    // Properly parse the price - extract only the number
+                    let price = parseFloat(priceText.replace(/[^0-9.-]+/g, ''));
+                    
+                    // Default to 0 if NaN
+                    if (isNaN(price)) {
+                        price = 0;
+                    }
+                    
+                    // Create book object
+                    const book = {
+                        id: Date.now(), // Simple unique ID
+                        title: title,
+                        author: author,
+                        price: price,
+                        quantity: 1
+                    };
+                    
+                    // Add to cart array
+                    cart.push(book);
+                    
+                    // Save to localStorage
+                    localStorage.setItem('bookCart', JSON.stringify(cart));
+                    
+                    // Update cart count
+                    cartCountElement.textContent = cart.length;
+                    
+                    // Visual feedback
+                    const originalText = this.textContent;
+                    this.textContent = "Added!";
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                    }, 1500);
+                });
+            });
+            
+            // Category tab functionality
+            const tabs = document.querySelectorAll('.category-tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Get the selected category (genre)
+                    const selectedGenre = this.textContent.trim();
+                    
+                    // Get all book cards
+                    const bookCards = document.querySelectorAll('.book-card');
+                    
+                    // Filter books based on selected genre
+                    bookCards.forEach(card => {
+                        const bookGenre = card.querySelector('.book-genre')?.textContent || '';
+                        
+                        // If "All Books" is selected or the book's genre matches the selected genre, show the book
+                        if (selectedGenre === 'All Books' || bookGenre === selectedGenre) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+    <!-- Header -->
+    <header>
+        <a href="#" class="logo">
+            <span class="logo-icon">📚</span>
+            <span>BookHaven</span>
+        </a>
+        
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Search for books, authors, or genres...">
+        </div>
+        
+        <div class="nav-links">
+            <a href="/cart" class="cart-icon">
+                🛒
+                <span class="cart-count">3</span>
+            </a>
+            <a href="/wishlist">📑 Wishlist</a>
+            <a href="#">👤 Account</a>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Category Navigation -->
+        <nav class="category-nav">
+            <ul class="category-tabs">
+                <li class="category-tab active">All Books</li>
+                <li class="category-tab">Thriller</li>
+                <li class="category-tab">Comedy</li>
+                <li class="category-tab">Sci-Fi</li>
+                <li class="category-tab">Romance</li>
+                <li class="category-tab">Mystery</li>
+                <li class="category-tab">Fantasy</li>
+                <li class="category-tab">Biography</li>
+                <li class="category-tab">Non-Fiction</li>
+                <li class="category-tab">Classics</li>
+            </ul>
+        </nav>
+        
+        <!-- Featured Books Section -->
+        <section class="featured-section">
+            <h2 class="section-title">Featured Books</h2>
+            <div class="featured-books">
+                <!-- Featured Book 1 -->
+                <div class="book-card featured-card">
+                    <div class="book-cover" style="background-color: #e0c3fc;">
+                        <span style="font-size: 80px;">📖</span>
+                    </div>
+                    <span class="badge">New</span>
+                    <div class="book-details">
+                        <h3 class="book-title">The Silent Patient</h3>
+                        <p class="book-author">By Alex Michaelides</p>
+                        <p class="book-price">$18.99</p>
+                        <div class="book-rating">
+                            <span class="rating-stars">★★★★★</span>
+                            <span>(4.8)</span>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn btn-primary">Add to Cart</button>
+                            <button class="btn btn-secondary">♡</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- New Arrivals Section -->
+        <section class="category-section">
+            <h2 class="section-title">New Arrivals</h2>
+            <div class="book-grid">
+                {% for book in books %}
+                <div class="book-card">
+                    <div class="book-cover" style="background-color: #e0c3fc;">
+                        <span style="font-size: 80px;">📘</span>
+                    </div>
+                    <div class="book-details">
+                        <h3 class="book-title">{{ book.title }}</h3>
+                        <p class="book-author">By {{ book.author }}</p>
+                        <p class="book-genre" {% if not loop.first %}style="display: none;"{% endif %}>{{ book.genre }}</p>
+                        <p class="book-price">${{ "%.2f"|format(book.price) }}</p>
+                        <div class="book-rating">
+                            <span class="rating-stars">★★★★★</span>
+                            <span>(4.5)</span>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn btn-primary">Add to Cart</button>
+                            <button class="btn btn-secondary">♡</button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>       
+        </section>
+        
+        <!-- Popular Authors Section -->
+        <section class="featured-section">
+            <h2 class="section-title">Popular Authors</h2>
+            <div class="featured-books">
+                <!-- Author 1 -->
+                <div class="book-card featured-card" style="text-align: center;">
+                    <div class="book-cover" style="background-color: #e0c3fc; display: flex; justify-content: center; align-items: center;">
+                        <span style="font-size: 80px;">👤</span>
+                    </div>
+                    <div class="book-details">
+                        <h3 class="book-title">Stephen King</h3>
+                        <p class="book-author">Horror, Thriller</p>
+                        <p>62 Books</p>
+                        <div class="book-actions" style="justify-content: center;">
+                            <button class="btn btn-primary">View Books</button>
+                        </div>
+                    </div>
+                </div>
+                
+        </section>
+        
+        <!-- Recommendations Section -->
+        <section class="category-section">
+            <h2 class="section-title">Recommended For You</h2>
+            <div class="book-grid">
+                <!-- Recommendation 1 -->
+                <div class="book-card">
+                    <div class="book-cover" style="background-color: #ffc3c3;">
+                        <span style="font-size: 80px;">📕</span>
+                    </div>
+                    <div class="book-details">
+                        <h3 class="book-title">The Invisible Life of Addie LaRue</h3>
+                        <p class="book-author">By V.E. Schwab</p>
+                        <p class="book-price">$18.99</p>
+                        <div class="book-rating">
+                            <span class="rating-stars">★★★★★</span>
+                            <span>(4.7)</span>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn btn-primary">Add to Cart</button>
+                            <button class="btn btn-secondary">♡</button>
+                        </div>
+                    </div>
+                </div>
+                
+             
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>BookHaven</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Our Stores</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Return Policy</a></li>
+                    <li><a href="#">Order Status</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Discover</h3>
+                <ul>
+                    <li><a href="#">Book Club</a></li>
+                    <li><a href="#">Gift Cards</a></li>
+                    <li><a href="#">Bestsellers</a></li>
+                    <li><a href="#">New Releases</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Connect With Us</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Newsletter</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 BookHaven. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Simple JavaScript for category tab switching
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.category-tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Get the selected category (genre)
+                    const selectedGenre = this.textContent.trim();
+                    
+                    // Get all book cards
+                    const bookCards = document.querySelectorAll('.book-card');
+                    
+                    // Filter books based on selected genre
+                    bookCards.forEach(card => {
+                        const bookGenre = card.querySelector('.book-genre')?.textContent || '';
+                        
+                        // If "All Books" is selected or the book's genre matches the selected genre, show the book
+                        if (selectedGenre === 'All Books' || bookGenre === selectedGenre) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Initialize cart from localStorage
+            let cart = JSON.parse(localStorage.getItem('bookCart')) || [];
+            let cartCount = cart.length;
+            const cartCountElement = document.querySelector('.cart-count');
+            
+            // Update cart count display
+            cartCountElement.textContent = cartCount;
+            
+            // Add to cart functionality
+            const addToCartButtons = document.querySelectorAll('.btn-primary');
+            
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Get book details
+                    const bookCard = this.closest('.book-card');
+                    const title = bookCard.querySelector('.book-title').textContent;
+                    const author = bookCard.querySelector('.book-author').textContent;
+                    const price = bookCard.querySelector('.book-price').textContent;
+                    
+                    // Create book object
+                    const book = {
+                        id: Date.now(), // Simple unique ID
+                        title: title,
+                        author: author,
+                        price: price,
+                        quantity: 1
+                    };
+                    
+                    // Add to cart array
+                    cart.push(book);
+                    
+                    // Save to localStorage
+                    localStorage.setItem('bookCart', JSON.stringify(cart));
+                    
+                    // Update cart count
+                    cartCount++;
+                    cartCountElement.textContent = cartCount;
+                    
+                    // Visual feedback
+                    const originalText = this.textContent;
+                    this.textContent = "Added!";
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                    }, 1500);
+                });
+            });
+            
+            // Add event listeners to all "Wishlist" buttons
+            const wishlistButtons = document.querySelectorAll('.btn-secondary');
+            
+            wishlistButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Get book details from the parent elements
+                    const bookCard = this.closest('.book-card');
+                    const title = bookCard.querySelector('.book-title').textContent;
+                    const author = bookCard.querySelector('.book-author').textContent;
+                    const priceText = bookCard.querySelector('.book-price').textContent;
+                    
+                    // Properly parse the price - extract only the number
+                    let price = parseFloat(priceText.replace(/[^0-9.-]+/g, ''));
+                    
+                    // Default to 0 if NaN
+                    if (isNaN(price)) {
+                        price = 0;
+                    }
+                    
+                    // Create book object
+                    const book = {
+                        id: Date.now(), // Simple unique ID
+                        title: title,
+                        author: author,
+                        price: price
+                    };
+                    
+                    // Check if book is already in wishlist
+                    const existingIndex = wishlist.findIndex(item => item.title === title);
+                    
+                    if (existingIndex >= 0) {
+                        // Remove from wishlist if already there
+                        wishlist.splice(existingIndex, 1);
+                        this.innerHTML = '🤍 Wishlist';
+                    } else {
+                        // Add to wishlist
+                        wishlist.push(book);
+                        this.innerHTML = '❤️ Wishlisted';
+                    }
+                    
+                    // Save to localStorage
+                    localStorage.setItem('bookWishlist', JSON.stringify(wishlist));
+                    
+                    // Visual feedback
+                    const originalText = this.textContent;
+                    setTimeout(() => {
+                        updateWishlistIcons();
+                    }, 100);
+                });
+            });
+            
+                // Check if book is already in wishlist and update button appearance
+                const bookCard = button.closest('.book-card');
+                const title = bookCard.querySelector('.book-title').textContent;
+                const author = bookCard.querySelector('.book-author').textContent;
+                
+                const isInWishlist = wishlist.some(item => 
+                    item.title === title && item.author === author
+                );
+                
+                if (isInWishlist) {
+                    button.innerHTML = '❤️';
+                }
+            });
+    
+    </script>
+    
+    <!-- Shopping Cart JavaScript -->
+    <script>
+        // Initialize cart and wishlist from localStorage or set to empty arrays if not exists
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+        
+        // Update cart count in the header
+        function updateCartCount() {
+            const cartCountElement = document.querySelector('.cart-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = cart.length;
+            }
+        }
+        
+        // Update wishlist count in the header
+        function updateWishlistCount() {
+            const wishlistCountElement = document.querySelector('.wishlist-count');
+            if (wishlistCountElement) {
+                wishlistCountElement.textContent = wishlist.length;
+            }
+        }
+        
+        // Add to cart functionality
+        function addToCart(book) {
+            cart.push(book);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            alert(`"${book.title}" has been added to your cart!`);
+        }
+        
+        // Add to wishlist functionality
+        function addToWishlist(book) {
+            // Check if book is already in wishlist
+            const isInWishlist = wishlist.some(item => 
+                item.title === book.title && item.author === book.author
+            );
+            
+            if (!isInWishlist) {
+                wishlist.push(book);
+                localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                updateWishlistCount();
+                alert(`"${book.title}" has been added to your wishlist!`);
+            } else {
+                alert(`"${book.title}" is already in your wishlist!`);
+            }
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCount();
+            updateWishlistCount();
+            
+            // Add event listeners to all "Add to Cart" buttons
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function() {
+                    const bookCard = this.closest('.book-card');
+                    const bookTitle = bookCard.querySelector('.book-title').textContent;
+                    const bookAuthor = bookCard.querySelector('.book-author').textContent.replace('By ', '');
+                    const bookPrice = bookCard.querySelector('.book-price').textContent.replace('$', '');
+                    const bookCover = bookCard.querySelector('.book-cover');
+                    const coverColor = window.getComputedStyle(bookCover).backgroundColor;
+                    
+                    const book = {
+                        id: Date.now(), // Generate a unique ID
+                        title: bookTitle,
+                        author: bookAuthor,
+                        price: bookPrice,
+                        coverColor: coverColor
+                    };
+                    
+                    addToCart(book);
+                });
+            });
+            
+            // Add event listeners to all "Add to Wishlist" buttons
+            document.querySelectorAll('.add-to-wishlist').forEach(button => {
+                button.addEventListener('click', function() {
+                    const bookCard = this.closest('.book-card');
+                    const bookTitle = bookCard.querySelector('.book-title').textContent;
+                    const bookAuthor = bookCard.querySelector('.book-author').textContent.replace('By ', '');
+                    const bookPrice = bookCard.querySelector('.book-price').textContent.replace('$', '');
+                    const bookCover = bookCard.querySelector('.book-cover');
+                    const coverColor = window.getComputedStyle(bookCover).backgroundColor;
+                    
+                    const book = {
+                        id: Date.now(), // Generate a unique ID
+                        title: bookTitle,
+                        author: bookAuthor,
+                        price: bookPrice,
+                        coverColor: coverColor
+                    };
+                    
+                    addToWishlist(book);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+                     
